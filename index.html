@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>FTIV – Football Team Investment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #0a0c12;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-bottom: 70px;
+            color: #e0e0e0;
+        }
+        .app-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #0f1117;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.4);
+            position: relative;
+        }
+        /* Auth */
+        .auth-card {
+            background: #181c24;
+            border-radius: 28px;
+            margin: 20px;
+            padding: 30px 20px;
+        }
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .auth-header h1 {
+            color: #f7b32b;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .toggle-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #2c313c;
+        }
+        .toggle-btn {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: #8e9aaf;
+        }
+        .toggle-btn.active {
+            color: #f7b32b;
+            border-bottom: 3px solid #f7b32b;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #2c313c;
+            border-radius: 60px;
+            font-size: 1rem;
+            outline: none;
+            background: #1e2129;
+            color: white;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #f7b32b;
+            color: #0a0c12;
+            border: none;
+            border-radius: 60px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.2s;
+        }
+        button:active {
+            background: #d4961a;
+        }
+        .error {
+            color: #f28b82;
+            font-size: 0.8rem;
+            text-align: center;
+            margin-top: 8px;
+        }
+        /* Dashboard */
+        .dashboard {
+            display: none;
+        }
+        .top-bar {
+            background: #1a1f2a;
+            padding: 20px 16px 12px;
+            color: white;
+            border-bottom: 1px solid #2c313c;
+        }
+        .greeting {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .logout-link {
+            text-align: right;
+            font-size: 0.7rem;
+            margin: 10px 16px;
+            cursor: pointer;
+            color: #f7b32b;
+        }
+        .shortcuts {
+            display: flex;
+            justify-content: space-around;
+            background: #181c24;
+            padding: 16px 10px;
+        }
+        .shortcut-item {
+            text-align: center;
+            cursor: pointer;
+        }
+        .shortcut-icon {
+            background: #2a2f3a;
+            width: 55px;
+            height: 55px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-size: 1.8rem;
+            color: #f7b32b;
+        }
+        .shortcut-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #b0b7c9;
+        }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 500px;
+            margin: 0 auto;
+            background: #181c24;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 18px;
+            border-top: 1px solid #2c313c;
+        }
+        .nav-item {
+            text-align: center;
+            cursor: pointer;
+            flex: 1;
+            color: #8e9aaf;
+        }
+        .nav-item i {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .nav-item span {
+            font-size: 0.7rem;
+        }
+        .nav-item.active {
+            color: #f7b32b;
+        }
+        .panel {
+            display: none;
+            padding: 16px;
+        }
+        .panel.active-panel {
+            display: block;
+        }
+        .card {
+            background: #181c24;
+            border-radius: 28px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .amount-badge {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #f7b32b;
+        }
+        .vip-item {
+            background: #1e2129;
+            border-radius: 60px;
+            padding: 12px 16px;
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .vip-icon {
+            width: 48px;
+            height: 48px;
+            background: #2a2f3a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #f7b32b;
+            text-transform: uppercase;
+        }
+        .vip-info {
+            flex: 1;
+        }
+        .vip-price {
+            font-size: 0.75rem;
+            color: #b0b7c9;
+        }
+        .purchase-btn {
+            background: #f7b32b;
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            width: auto;
+            margin: 0;
+            color: #0a0c12;
+        }
+        .service-option {
+            background: #1e2129;
+            border-radius: 60px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            border: 1px solid #2c313c;
+        }
+        hr {
+            margin: 12px 0;
+            border-color: #2c313c;
+        }
+        .copy-btn {
+            background: #2a2f3a;
+            padding: 4px 12px;
+            border-radius: 40px;
+            color: #f7b32b;
+            font-size: 0.7rem;
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 8px;
+        }
+        .bank-circle {
+            width: 40px;
+            height: 40px;
+            background: #2a2f3a;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .bank-list-popup {
+            position: absolute;
+            background: #1e2129;
+            border-radius: 28px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            z-index: 200;
+            width: 180px;
+            border: 1px solid #2c313c;
+        }
+        .bank-list-popup div {
+            padding: 12px 16px;
+            border-bottom: 1px solid #2c313c;
+            cursor: pointer;
+            color: white;
+        }
+        .bank-list-popup div:hover {
+            background: #2a2f3a;
+        }
+        .hide {
+            display: none;
+        }
+        .text-small {
+            font-size: 0.7rem;
+            color: #8e9aaf;
+        }
+        .pending {
+            background: #3e2a1f;
+            border-left: 4px solid #f7b32b;
+        }
+        .success {
+            background: #1a3a2a;
+            border-left: 4px solid #4caf50;
+        }
+        .flex {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .amount-chip {
+            background: #2a2f3a;
+            padding: 8px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.1s;
+            display: inline-block;
+            margin: 4px;
+        }
+        .amount-chip.selected {
+            background: #f7b32b;
+            color: #0a0c12;
+        }
+        .bank-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .bank-btn {
+            background: #2a2f3a;
+            padding: 10px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            text-align: center;
+            flex: 1 0 auto;
+        }
+        .bank-btn.selected {
+            background: #f7b32b;
+            color: #0a0c12;
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background: #181c24;
+            border-radius: 28px;
+            max-width: 450px;
+            width: 100%;
+            padding: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .copy-account {
+            background: #2a2f3a;
+            padding: 8px;
+            border-radius: 60px;
+            font-family: monospace;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <!-- Auth Section -->
+    <div id="authSection">
+        <div class="auth-card">
+            <div class="auth-header"><h1><i class="fas fa-futbol"></i> FTIV</h1><p>Football Team Investment</p></div>
+            <div class="toggle-buttons">
+                <div id="loginTab" class="toggle-btn active">LOG IN</div>
+                <div id="registerTab" class="toggle-btn">REGISTER</div>
+            </div>
+            <div id="loginForm">
+                <div class="form-group"><input type="tel" id="loginPhone" placeholder="Mobile Number (09XXXXXXXX)"></div>
+                <div class="form-group"><input type="password" id="loginPassword" placeholder="Password"></div>
+                <button id="doLoginBtn">LOG IN</button>
+                <div id="loginError" class="error"></div>
+            </div>
+            <div id="registerForm" style="display:none;">
+                <div class="form-group"><input type="tel" id="regPhone" placeholder="Mobile Number (09XXXXXXXX)"></div>
+                <div class="form-group"><input type="password" id="regPassword" placeholder="Password"></div>
+                <div class="form-group"><input type="password" id="regConfirm" placeholder="Confirm Password"></div>
+                <div class="form-group"><input type="text" id="refCodeInput" placeholder="Invitation Code (optional)"></div>
+                <button id="doRegisterBtn">CREATE ACCOUNT</button>
+                <div id="regError" class="error"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard">
+        <div class="top-bar"><div class="greeting" id="greetingText">⚽ Welcome!</div></div>
+        <div class="logout-link" id="logoutBtn">← Logout</div>
+        <div class="shortcuts">
+            <div class="shortcut-item" data-action="deposit"><div class="shortcut-icon"><i class="fas fa-download"></i></div><div class="shortcut-label">Deposit</div></div>
+            <div class="shortcut-item" data-action="withdraw"><div class="shortcut-icon"><i class="fas fa-upload"></i></div><div class="shortcut-label">Withdraw</div></div>
+            <div class="shortcut-item" data-action="checkin"><div class="shortcut-icon"><i class="fas fa-calendar-check"></i></div><div class="shortcut-label">Check In</div></div>
+            <div class="shortcut-item" data-action="service"><div class="shortcut-icon"><i class="fas fa-headset"></i></div><div class="shortcut-label">Service</div></div>
+        </div>
+
+        <div id="homePanel" class="panel active-panel"></div>
+        <div id="orderPanel" class="panel"></div>
+        <div id="showPanel" class="panel"></div>
+        <div id="sharePanel" class="panel"></div>
+        <div id="myPanel" class="panel"></div>
+
+        <div class="bottom-nav">
+            <div class="nav-item" data-nav="home"><i class="fas fa-home"></i><span>Home</span></div>
+            <div class="nav-item" data-nav="order"><i class="fas fa-shopping-cart"></i><span>Orders</span></div>
+            <div class="nav-item" data-nav="show"><i class="fas fa-chart-line"></i><span>Show</span></div>
+            <div class="nav-item" data-nav="share"><i class="fas fa-share-alt"></i><span>Share</span></div>
+            <div class="nav-item" data-nav="my"><i class="fas fa-user"></i><span>My</span></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ---------- DATA HELPERS ----------
+    let currentUser = null;
+    const VIP_LIST = [
+        { level:1, club:"Everton", price:1200, daily:100, totalIncome:30000 },
+        { level:2, club:"Brentford", price:3200, daily:270, totalIncome:81000 },
+        { level:3, club:"Newcastle", price:6400, daily:560, totalIncome:168000 },
+        { level:4, club:"Tottenham", price:10000, daily:909, totalIncome:272700 },
+        { level:5, club:"Aston Villa", price:23000, daily:2150, totalIncome:645000 },
+        { level:6, club:"Chelsea", price:43000, daily:4150, totalIncome:1245000 },
+        { level:7, club:"Liverpool", price:86000, daily:8600, totalIncome:2580003 },
+        { level:8, club:"Man United", price:120000, daily:12500, totalIncome:3750000 },
+        { level:9, club:"Man City", price:240000, daily:26000, totalIncome:7800000 },
+        { level:10, club:"Arsenal", price:340000, daily:38000, totalIncome:11400003 }
+    ];
+
+    function getUsers() { return JSON.parse(localStorage.getItem("ftiv_users") || "{}"); }
+    function saveUsers(u) { localStorage.setItem("ftiv_users", JSON.stringify(u)); }
+    function getReferrals() { return JSON.parse(localStorage.getItem("ftiv_refs") || "{}"); }
+    function saveReferrals(r) { localStorage.setItem("ftiv_refs", JSON.stringify(r)); }
+    function getUserStats(phone) { let s = localStorage.getItem("ftiv_stats_"+phone); return s ? JSON.parse(s) : { balance:0, totalDeposit:0, totalWithdraw:0, purchased:[], lastDailyIncome:"", lastCheckin:"", totalIncome:0, chestLast:"" }; }
+    function saveUserStats(phone, s) { localStorage.setItem("ftiv_stats_"+phone, JSON.stringify(s)); }
+    function getUserBank(phone) { let b = localStorage.getItem("ftiv_bank_"+phone); return b ? JSON.parse(b) : null; }
+    function saveUserBank(phone, b) { localStorage.setItem("ftiv_bank_"+phone, JSON.stringify(b)); }
+    function getUserTx(phone) { let t = localStorage.getItem("ftiv_tx_"+phone); return t ? JSON.parse(t) : []; }
+    function saveUserTx(phone, t) { localStorage.setItem("ftiv_tx_"+phone, JSON.stringify(t)); }
+    function getUserWithdrawals(phone) { let w = localStorage.getItem("ftiv_wd_"+phone); return w ? JSON.parse(w) : []; }
+    function saveUserWithdrawals(phone, w) { localStorage.setItem("ftiv_wd_"+phone, JSON.stringify(w)); }
+
+    // Daily income
+    function applyDailyIncome() {
+        if(!currentUser) return;
+        let stats = getUserStats(currentUser);
+        let today = new Date().toDateString();
+        if(stats.lastDailyIncome === today) return;
+        let total = 0;
+        (stats.purchased || []).forEach(lvl => { let vip = VIP_LIST.find(v=>v.level===lvl); if(vip) total += vip.daily; });
+        if(total > 0) {
+            stats.balance += total;
+            stats.totalIncome = (stats.totalIncome || 0) + total;
+            saveUserStats(currentUser, stats);
+            let tx = getUserTx(currentUser);
+            tx.push({ type:"daily_income", amount:total, timestamp:Date.now() });
+            saveUserTx(currentUser, tx);
+        }
+        stats.lastDailyIncome = today;
+        saveUserStats(currentUser, stats);
+    }
+
+    // Register with referral
+    function registerUser(phone, pwd, refCode) {
+        let users = getUsers();
+        if(users[phone]) return false;
+        let inviteCode = Math.random().toString(36).substring(2,10).toUpperCase();
+        users[phone] = { password:pwd, inviteCode, referrer:null };
+        saveUsers(users);
+        saveUserStats(phone, { balance:0, totalDeposit:0, totalWithdraw:0, purchased:[], lastDailyIncome:"", lastCheckin:"", totalIncome:0, chestLast:"" });
+        saveUserTx(phone, []);
+        saveUserWithdrawals(phone, []);
+        if(refCode) {
+            for(let p in users) {
+                if(users[p].inviteCode === refCode) {
+                    users[phone].referrer = p;
+                    saveUsers(users);
+                    let refs = getReferrals();
+                    if(!refs[p]) refs[p] = { members:[], activeMembers:[] };
+                    if(!refs[p].members.includes(phone)) refs[p].members.push(phone);
+                    saveReferrals(refs);
+                    break;
+                }
+            }
+        }
+        return true;
+    }
+
+    // Deposit core logic (with TIN validation)
+    function completeDeposit(amount, bank, tin, tid, orderCode) {
+        let valid = false;
+        let bankInfo = {};
+        if(bank === "CBE") {
+            valid = (tin === "1000529209928");
+            bankInfo = { name:"ABRHAM EWUNETE EJIGALEM", account:"1000529209928" };
+        } else if(bank === "Telebirr") {
+            valid = (tin === "0951499555");
+            bankInfo = { name:"ABRHAM", account:"0951499555" };
+        } else {
+            return { success:false, msg:"Unsupported bank. Use CBE or Telebirr." };
+        }
+        if(!valid) return { success:false, msg:"Invalid TIN / Account number" };
+        if(amount < 900) return { success:false, msg:"Minimum deposit 900 ETB" };
+        let stats = getUserStats(currentUser);
+        stats.balance += amount;
+        stats.totalDeposit += amount;
+        stats.totalIncome += amount;
+        saveUserStats(currentUser, stats);
+        let tx = getUserTx(currentUser);
+        tx.push({ type:"deposit", amount, timestamp:Date.now(), tid, orderCode, bank });
+        saveUserTx(currentUser, tx);
+
+        // Referral commissions (20%,3%,2%)
+        let users = getUsers();
+        let upline = users[currentUser]?.referrer;
+        let level = 1;
+        while(upline && level <= 3) {
+            let comm = 0;
+            if(level===1) comm = amount * 0.2;
+            else if(level===2) comm = amount * 0.03;
+            else comm = amount * 0.02;
+            if(comm > 0) {
+                let upStats = getUserStats(upline);
+                upStats.balance += comm;
+                upStats.totalIncome += comm;
+                saveUserStats(upline, upStats);
+                let upTx = getUserTx(upline);
+                upTx.push({ type:"commission", amount:comm, from:currentUser, level, timestamp:Date.now() });
+                saveUserTx(upline, upTx);
+            }
+            upline = users[upline]?.referrer;
+            level++;
+        }
+        // mark active member for referrer
+        let refPhone = users[currentUser]?.referrer;
+        if(refPhone) {
+            let refs = getReferrals();
+            if(refs[refPhone] && !refs[refPhone].activeMembers.includes(currentUser)) {
+                refs[refPhone].activeMembers.push(currentUser);
+                saveReferrals(refs);
+            }
+        }
+        return { success:true, msg:`Deposit of ${amount} ETB successful!` };
+    }
+
+    // Purchase VIP
+    function purchaseVIP(level) {
+        let vip = VIP_LIST.find(v=>v.level===level);
+        if(!vip) return { success:false, msg:"Invalid VIP" };
+        let stats = getUserStats(currentUser);
+        if(stats.balance < vip.price) return { success:false, msg:"Insufficient balance" };
+        if(stats.purchased.includes(level)) return { success:false, msg:"Already purchased this VIP" };
+        stats.balance -= vip.price;
+        stats.purchased.push(level);
+        saveUserStats(currentUser, stats);
+        let tx = getUserTx(currentUser);
+        tx.push({ type:"purchase", amount:vip.price, level, timestamp:Date.now(), desc:`${vip.club} VIP${level}` });
+        saveUserTx(currentUser, tx);
+        return { success:true, msg:`Purchased VIP${level} (${vip.club})! Daily income +${vip.daily} ETB.` };
+    }
+
+    // Withdraw request (pending 30 min)
+    function requestWithdraw(amount) {
+        let stats = getUserStats(currentUser);
+        if(amount < 300) return { success:false, msg:"Minimum withdrawal 300 ETB" };
+        if(amount > stats.balance) return { success:false, msg:"Insufficient balance" };
+        if(stats.totalDeposit === 0) return { success:false, msg:"You must deposit first" };
+        let fee = amount * 0.1;
+        let net = amount - fee;
+        let wds = getUserWithdrawals(currentUser);
+        let wid = Date.now();
+        wds.push({ amount, fee, net, status:"pending", timestamp:wid });
+        saveUserWithdrawals(currentUser, wds);
+        // schedule auto-complete after 30 minutes
+        setTimeout(() => {
+            let w = getUserWithdrawals(currentUser);
+            let idx = w.findIndex(wd => wd.timestamp === wid);
+            if(idx !== -1 && w[idx].status === "pending") {
+                w[idx].status = "success";
+                saveUserWithdrawals(currentUser, w);
+                let newStats = getUserStats(currentUser);
+                newStats.balance -= amount;
+                newStats.totalWithdraw += amount;
+                saveUserStats(currentUser, newStats);
+                let tx = getUserTx(currentUser);
+                tx.push({ type:"withdrawal", amount, net, timestamp:Date.now(), status:"completed" });
+                saveUserTx(currentUser, tx);
+            }
+        }, 30*60*1000);
+        return { success:true, msg:`Withdrawal request sent. Fee: ${fee} ETB, net: ${net} ETB. Processed within 30 min.` };
+    }
+
+    // Check-in (ETB10 daily)
+    function dailyCheckin() {
+        let stats = getUserStats(currentUser);
+        let today = new Date().toDateString();
+        if(stats.lastCheckin === today) return { success:false, msg:"Already checked in today!" };
+        let bonus = 10;
+        stats.balance += bonus;
+        stats.totalIncome += bonus;
+        stats.lastCheckin = today;
+        saveUserStats(currentUser, stats);
+        let tx = getUserTx(currentUser);
+        tx.push({ type:"checkin", amount:bonus, timestamp:Date.now() });
+        saveUserTx(currentUser, tx);
+        return { success:true, msg:`Check-in successful! +${bonus} ETB.` };
+    }
+
+    // Chest
+    function openChest() {
+        let stats = getUserStats(currentUser);
+        let today = new Date().toDateString();
+        if(stats.chestLast === today) return { success:false, msg:"Chest already opened today!" };
+        let reward = Math.floor(Math.random() * (50-20+1) + 20);
+        stats.balance += reward;
+        stats.totalIncome += reward;
+        stats.chestLast = today;
+        saveUserStats(currentUser, stats);
+        let tx = getUserTx(currentUser);
+        tx.push({ type:"chest", amount:reward, timestamp:Date.now() });
+        saveUserTx(currentUser, tx);
+        return { success:true, msg:`🎁 Chest opened! You got ${reward} ETB.` };
+    }
+
+    // ---------- UI RENDERING ----------
+    const authDiv = document.getElementById('authSection'), dashDiv = document.getElementById('dashboard');
+    const loginFormDiv = document.getElementById('loginForm'), registerFormDiv = document.getElementById('registerForm');
+    const loginTab = document.getElementById('loginTab'), registerTab = document.getElementById('registerTab');
+    const doLogin = document.getElementById('doLoginBtn'), doRegister = document.getElementById('doRegisterBtn'), logoutBtn = document.getElementById('logoutBtn');
+
+    function showAuth() { authDiv.style.display='block'; dashDiv.style.display='none'; }
+    function showDashboard() { authDiv.style.display='none'; dashDiv.style.display='block'; applyDailyIncome(); renderHome(); showPanel('home'); updateGreeting(); }
+    function updateGreeting() { if(currentUser) document.getElementById('greetingText').innerHTML = `⚽ Welcome, ${currentUser.slice(-4)}!`; }
+    function showPanel(pn) {
+        document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active-panel'));
+        document.getElementById(pn+'Panel').classList.add('active-panel');
+        document.querySelectorAll('.nav-item').forEach(n=>{ n.classList.remove('active'); if(n.getAttribute('data-nav')===pn) n.classList.add('active'); });
+        if(pn==='home') renderHome();
+        if(pn==='order') renderOrder();
+        if(pn==='show') renderShow();
+        if(pn==='share') renderShare();
+        if(pn==='my') renderMy();
+    }
+
+    function renderHome() {
+        let stats = getUserStats(currentUser);
+        let html = `<div class="card"><div class="flex-between"><span>⚽ My Balance</span><span class="amount-badge">${stats.balance.toFixed(2)} ETB</span></div>
+        <div class="flex-between"><span>📈 Total Income</span><span>${stats.totalIncome.toFixed(2)} ETB</span></div></div>
+        <div class="card"><h3>⚽ FTIV Purchase Area</h3>`;
+        VIP_LIST.forEach(v => {
+            html += `<div class="vip-item"><div class="vip-icon">${v.club.charAt(0)}</div><div class="vip-info"><strong>${v.club}</strong><div class="vip-price">VIP${v.level} | Price: ${v.price} ETB | Daily: ${v.daily} ETB | Total: ${v.totalIncome} ETB</div></div><button class="purchase-btn" data-vip="${v.level}">Purchase ${v.price} ETB</button></div>`;
+        });
+        html += `</div>`;
+        document.getElementById('homePanel').innerHTML = html;
+        document.querySelectorAll('.purchase-btn').forEach(btn => {
+            btn.addEventListener('click', () => { let res = purchaseVIP(parseInt(btn.dataset.vip)); alert(res.msg); if(res.success) renderHome(); });
+        });
+    }
+
+    function renderOrder() {
+        let stats = getUserStats(currentUser);
+        let purchased = stats.purchased || [];
+        let items = purchased.map(lvl => { let v = VIP_LIST.find(v=>v.level===lvl); return `<div class="vip-item"><div class="vip-icon">${v.club.charAt(0)}</div><div><strong>${v.club}</strong><br>Daily +${v.daily} ETB</div></div>`; }).join('');
+        if(!items) items = "<div class='text-small'>No VIP purchased yet</div>";
+        document.getElementById('orderPanel').innerHTML = `<div class="card"><h4>📦 My Purchased VIPs</h4>${items}</div><div class="card"><h4>🔁 Buy New VIP</h4>${VIP_LIST.map(v=>`<div class="vip-item"><div class="vip-icon">${v.club.charAt(0)}</div><div><strong>${v.club}</strong><br>${v.price} ETB</div><button class="buy-order" data-vip="${v.level}">Buy</button></div>`).join('')}</div>`;
+        document.querySelectorAll('.buy-order').forEach(btn => { btn.addEventListener('click',()=>{ let res = purchaseVIP(parseInt(btn.dataset.vip)); alert(res.msg); if(res.success) renderOrder(); }); });
+    }
+
+    function renderShow() {
+        let stats = getUserStats(currentUser);
+        let refs = getReferrals()[currentUser] || { members:[], activeMembers:[] };
+        let vipDaily = (stats.purchased||[]).reduce((sum,lvl)=>{ let v=VIP_LIST.find(v=>v.level===lvl); return sum+(v?v.daily:0); },0);
+        document.getElementById('showPanel').innerHTML = `<div class="card"><h4>📊 Team Performance</h4><div>👥 Members: ${refs.members.length}</div><div>✅ Active: ${refs.activeMembers.length}</div><hr><h4>💰 Daily VIP Profit</h4><div>+${vipDaily} ETB / day</div><button id="refreshDailyBtn" style="background:#2a6b3c;">Refresh Daily Income</button></div>`;
+        document.getElementById('refreshDailyBtn')?.addEventListener('click',()=>{ applyDailyIncome(); alert("Daily income updated!"); renderShow(); });
+    }
+
+    function renderShare() {
+        let users = getUsers();
+        let myCode = users[currentUser]?.inviteCode;
+        let link = window.location.href.split('?')[0] + `?ref=${myCode}`;
+        document.getElementById('sharePanel').innerHTML = `<div class="card"><h4>📢 Invite Friends</h4><div><strong>Invitation code:</strong> ${myCode} <span class="copy-btn" data-copy="${myCode}">Copy</span></div><div><strong>Link:</strong> <span style="font-size:0.7rem;">${link}</span> <span class="copy-btn" data-copy="${link}">Copy</span></div><hr><p>Referral rewards: 20% (L1), 3% (L2), 2% (L3) of deposits.</p></div>`;
+        document.querySelectorAll('.copy-btn').forEach(btn=>btn.addEventListener('click',()=>{ navigator.clipboard.writeText(btn.dataset.copy); alert("Copied!"); }));
+    }
+
+    function renderMy() {
+        let stats = getUserStats(currentUser);
+        let bank = getUserBank(currentUser);
+        document.getElementById('myPanel').innerHTML = `<div class="card"><div class="flex-between"><span>👤 ${currentUser}</span><span>💰 ${stats.balance.toFixed(2)} ETB</span></div><div>📈 Total Deposit: ${stats.totalDeposit.toFixed(2)} ETB</div><div>🏧 Total Withdraw: ${stats.totalWithdraw.toFixed(2)} ETB</div><hr><div class="flex" style="flex-wrap:wrap;"><button id="teamTaskBtn">👥 Team Task</button><button id="chestBtn">🎁 Chest</button><button id="reportsBtn">📊 Reports</button><button id="bankAccountBtn">🏦 Bank Account</button><button id="custServiceBtn">🛎️ Customer Service</button><button id="changePwdBtn">🔐 Change Password</button><button id="downloadBtn">⬇️ Download</button></div></div><div id="myDynamicArea"></div>`;
+        document.getElementById('teamTaskBtn').onclick = showTeamTask;
+        document.getElementById('chestBtn').onclick = ()=>{ let res = openChest(); alert(res.msg); renderMy(); };
+        document.getElementById('reportsBtn').onclick = showReports;
+        document.getElementById('bankAccountBtn').onclick = showBankForm;
+        document.getElementById('custServiceBtn').onclick = showServicePanel;
+        document.getElementById('changePwdBtn').onclick = showChangePassword;
+        document.getElementById('downloadBtn').onclick = ()=>alert("Download link coming soon.");
+    }
+
+    function showTeamTask() {
+        let refs = getReferrals()[currentUser] || { members:[], activeMembers:[] };
+        let area = document.getElementById('myDynamicArea');
+        area.innerHTML = `<div class="card"><h4>Team Task</h4><div>👥 Members: ${refs.members.length}</div><div>✅ Active: ${refs.activeMembers.length}</div><hr><div class="text-small">Commission rates: 20% (level1), 3% (level2), 2% (level3)</div></div>`;
+    }
+
+    function showReports() {
+        let tx = getUserTx(currentUser);
+        let area = document.getElementById('myDynamicArea');
+        area.innerHTML = `<div class="card"><h4>Transaction History</h4>${tx.slice().reverse().map(t=>`<div class="flex-between"><span>${new Date(t.timestamp).toLocaleString()}</span><span>${t.type.toUpperCase()} ${t.amount} ETB</span></div>`).join('')||'No transactions'}</div>`;
+    }
+
+    function showBankForm() {
+        let bank = getUserBank(currentUser);
+        let area = document.getElementById('myDynamicArea');
+        area.innerHTML = `<div class="card"><h4>🏦 Bank Account</h4><div style="position:relative; display:flex; gap:8px;"><input type="text" id="bankName" placeholder="Bank name" value="${bank?.bankName||''}" readonly style="flex:1;"><div id="bankDotsBtn" class="bank-circle"><i class="fas fa-ellipsis-h"></i></div></div><div id="bankSelectPopup" class="bank-list-popup hide"></div><div class="form-group"><input type="text" id="accNumber" placeholder="Account Number" value="${bank?.accountNumber||''}"></div><div class="form-group"><input type="text" id="realName" placeholder="Real Name" value="${bank?.realName||''}"></div><button id="saveBankBtn">Confirm</button></div>`;
+        const bankList = ["CBE","Telebirr","Awash","Abysinia","Oromia","Dashen","Lion","Zemen","Bunna","Nib"];
+        const popup = document.getElementById('bankSelectPopup');
+        const dots = document.getElementById('bankDotsBtn');
+        const bankInput = document.getElementById('bankName');
+        dots.onclick = (e) => { e.stopPropagation(); popup.classList.toggle('hide'); if(!popup.classList.contains('hide')) popup.innerHTML = bankList.map(b=>`<div data-bank="${b}">${b}</div>`).join(''); };
+        popup.onclick = (e) => { let target = e.target.closest('[data-bank]'); if(target) { bankInput.value = target.dataset.bank; popup.classList.add('hide'); } };
+        document.getElementById('saveBankBtn').onclick = () => {
+            let bName = bankInput.value.trim(), acc = document.getElementById('accNumber').value.trim(), name = document.getElementById('realName').value.trim();
+            if(!bName||!acc||!name) { alert("Fill all fields"); return; }
+            saveUserBank(currentUser, { bankName:bName, accountNumber:acc, realName:name });
+            alert("Bank account saved!");
+            renderMy();
+        };
+    }
+
+    function showChangePassword() {
+        let users = getUsers();
+        let area = document.getElementById('myDynamicArea');
+        area.innerHTML = `<div class="card"><h4>Change Password</h4><input type="password" id="oldPwd" placeholder="Current Password"><input type="password" id="newPwd" placeholder="New Password"><input type="password" id="confirmPwd" placeholder="Confirm Password"><button id="changePwdConfirm">Confirm</button></div>`;
+        document.getElementById('changePwdConfirm').onclick = () => {
+            let old = document.getElementById('oldPwd').value;
+            let newp = document.getElementById('newPwd').value;
+            let conf = document.getElementById('confirmPwd').value;
+            if(users[currentUser].password !== old) { alert("Wrong old password"); return; }
+            if(newp !== conf) { alert("Passwords do not match"); return; }
+            users[currentUser].password = newp;
+            saveUsers(users);
+            alert("Password changed!");
+            renderMy();
+        };
+    }
+
+    // Deposit modal flow
+    let depositModal = null;
+    function startDeposit() {
+        const amounts = [900,1200,3200,6400,10000,23000,43000,86000,120000,240000,340000];
+        let selectedAmount = null;
+        let selectedBank = null;
+        let modalDiv = document.createElement('div');
+        modalDiv.className = 'modal';
+        modalDiv.innerHTML = `<div class="modal-content" id="depositModalContent"></div>`;
+        document.body.appendChild(modalDiv);
+        const content = modalDiv.querySelector('#depositModalContent');
+        function renderAmountStep() {
+            content.innerHTML = `<h3>Select Amount</h3><div class="flex">${amounts.map(a => `<div class="amount-chip" data-amt="${a}">${a} ETB</div>`).join('')}</div><button id="continueAmountBtn" disabled>Continue</button>`;
+            content.querySelectorAll('.amount-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    selectedAmount = parseInt(chip.dataset.amt);
+                    content.querySelectorAll('.amount-chip').forEach(c => c.classList.remove('selected'));
+                    chip.classList.add('selected');
+                    document.getElementById('continueAmountBtn').disabled = false;
+                });
+            });
+            document.getElementById('continueAmountBtn').onclick = () => { if(selectedAmount) renderBankStep(); };
+        }
+        function renderBankStep() {
+            const banks = ["CBE","Telebirr","Awash","Abysinia","Oromia","Dashen","Lion","Zemen"];
+            content.innerHTML = `<h3>Choose Bank</h3><div class="bank-grid">${banks.map(b => `<div class="bank-btn" data-bank="${b}">${b}</div>`).join('')}</div><button id="confirmBankBtn" disabled>Continue</button>`;
+            content.querySelectorAll('.bank-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    selectedBank = btn.dataset.bank;
+                    content.querySelectorAll('.bank-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    document.getElementById('confirmBankBtn').disabled = false;
+                });
+            });
+            document.getElementById('confirmBankBtn').onclick = () => { if(selectedBank) renderTipStep(); };
+        }
+        function renderTipStep() {
+            content.innerHTML = `<h3>⚠️ Important</h3><p>After selecting payment method, you will see the account details. Transfer EXACT amount and use the Order Code.</p><button id="okTipBtn">OK</button>`;
+            document.getElementById('okTipBtn').onclick = () => renderPaymentStep();
+        }
+        function renderPaymentStep() {
+            let accountInfo = { name:"", account:"" };
+            if(selectedBank === "CBE") { accountInfo = { name:"ABRHAM EWUNETE EJIGALEM", account:"1000529209928" }; }
+            else if(selectedBank === "Telebirr") { accountInfo = { name:"ABRHAM", account:"0951499555" }; }
+            else { alert("Only CBE and Telebirr are supported for deposit."); modalDiv.remove(); return; }
+            let orderCode = "PN" + Date.now() + Math.random().toString(36).substring(2,8).toUpperCase();
+            content.innerHTML = `<h3>Pay Br ${selectedAmount}</h3>
+                <div><strong>Name:</strong> ${accountInfo.name}</div>
+                <div><strong>Bank:</strong> ${selectedBank}</div>
+                <div><strong>Account:</strong> ${accountInfo.account} <span class="copy-btn" data-copy="${accountInfo.account}">Copy</span></div>
+                <div><strong>Amount:</strong> ${selectedAmount} ETB</div>
+                <div><strong>Order Code:</strong> ${orderCode} <span class="copy-btn" data-copy="${orderCode}">Copy</span></div>
+                <hr><p>Please fill in the order code when transferring.</p>
+                <button id="madeTransferBtn">I have made bank transfer</button>`;
+            document.querySelectorAll('.copy-btn').forEach(btn => btn.addEventListener('click',()=>{ navigator.clipboard.writeText(btn.dataset.copy); alert("Copied!"); }));
+            document.getElementById('madeTransferBtn').onclick = () => renderTidStep(orderCode);
+        }
+        function renderTidStep(orderCode) {
+            content.innerHTML = `<h3>Submit Transaction ID</h3><input type="text" id="tidInput" placeholder="Transaction ID / Session ID"><button id="submitTidBtn">Submit Transaction ID</button>`;
+            document.getElementById('submitTidBtn').onclick = () => {
+                let tid = document.getElementById('tidInput').value.trim();
+                if(!tid) { alert("Please enter Transaction ID"); return; }
+                // TIN validation: The TIN is the account number itself, already validated in payment step. Here we just require non-empty TID.
+                let res = completeDeposit(selectedAmount, selectedBank, (selectedBank==="CBE"?"1000529209928":"0951499555"), tid, orderCode);
+                alert(res.msg);
+                modalDiv.remove();
+                if(res.success) { renderHome(); renderMy(); }
+            };
+        }
+        renderAmountStep();
+    }
+
+    // Withdraw flow
+    function startWithdraw() {
+        let stats = getUserStats(currentUser);
+        if(stats.totalDeposit === 0) { alert("You must deposit before withdrawing"); return; }
+        let bank = getUserBank(currentUser);
+        if(!bank) { alert("Please set your bank account in My page first."); return; }
+        let amount = parseFloat(prompt("Enter withdrawal amount (min 300 ETB):"));
+        if(isNaN(amount) || amount<300) { alert("Minimum 300 ETB"); return; }
+        if(confirm(`Confirm withdrawal of ${amount} ETB?`)) {
+            let res = requestWithdraw(amount);
+            alert(res.msg);
+            if(res.success) { renderHome(); renderMy(); }
+        }
+    }
+
+    function showServicePanel() {
+        let panel = document.getElementById('servicePanel');
+        if(!panel) { let d = document.createElement('div'); d.id='servicePanel'; d.className='panel'; document.querySelector('.dashboard').appendChild(d); panel=d; }
+        document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active-panel'));
+        panel.classList.add('active-panel');
+        panel.innerHTML = `<div class="card"><h4>📞 Customer Service</h4><div class="service-option" id="csBtn">⚽ FTIV Customer Service</div><div class="service-option" id="offBtn">📢 FTIV Official Channel</div></div>`;
+        document.getElementById('csBtn').onclick = () => window.location.href = "https://t.me/greenplantcustemerservice";
+        document.getElementById('offBtn').onclick = () => window.location.href = "https://t.me/footballgameinvestement";
+    }
+
+    // Shortcuts
+    document.querySelectorAll('.shortcut-item').forEach(el=>{
+        el.addEventListener('click',()=>{
+            let a = el.dataset.action;
+            if(a==='deposit') startDeposit();
+            else if(a==='withdraw') startWithdraw();
+            else if(a==='checkin') { let r = dailyCheckin(); alert(r.msg); if(r.success) renderHome(); }
+            else if(a==='service') showServicePanel();
+        });
+    });
+
+    // Auth logic
+    doLogin.onclick = () => {
+        let phone = document.getElementById('loginPhone').value.trim();
+        let pwd = document.getElementById('loginPassword').value;
+        let users = getUsers();
+        if(!phone||!pwd) { document.getElementById('loginError').innerText = "Fill all"; return; }
+        if(!users[phone] || users[phone].password !== pwd) { document.getElementById('loginError').innerText = "Invalid credentials"; return; }
+        currentUser = phone;
+        localStorage.setItem("ftiv_logged", phone);
+        showDashboard();
+    };
+    doRegister.onclick = () => {
+        let phone = document.getElementById('regPhone').value.trim();
+        let pwd = document.getElementById('regPassword').value;
+        let conf = document.getElementById('regConfirm').value;
+        let ref = document.getElementById('refCodeInput').value.trim();
+        if(!phone||!pwd||!conf) { document.getElementById('regError').innerText = "Fill all"; return; }
+        if(pwd!==conf) { document.getElementById('regError').innerText = "Passwords mismatch"; return; }
+        if(registerUser(phone,pwd,ref)) {
+            currentUser = phone;
+            localStorage.setItem("ftiv_logged", phone);
+            showDashboard();
+        } else { document.getElementById('regError').innerText = "Phone already exists"; }
+    };
+    logoutBtn.onclick = () => { localStorage.removeItem("ftiv_logged"); currentUser=null; showAuth(); };
+    loginTab.onclick = () => { loginTab.classList.add('active'); registerTab.classList.remove('active'); loginFormDiv.style.display='block'; registerFormDiv.style.display='none'; };
+    registerTab.onclick = () => { registerTab.classList.add('active'); loginTab.classList.remove('active'); loginFormDiv.style.display='none'; registerFormDiv.style.display='block'; };
+    document.querySelectorAll('.nav-item').forEach(nav=>nav.addEventListener('click',()=>showPanel(nav.dataset.nav)));
+
+    let saved = localStorage.getItem("ftiv_logged");
+    if(saved && getUsers()[saved]) { currentUser = saved; showDashboard(); } else showAuth();
+</script>
+</body>
+</html>
